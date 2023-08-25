@@ -1,3 +1,5 @@
+import { Model } from "./model.js";
+import { Static } from "./static.js";
 
 function set(p, color){
   ctx.fillStyle = color;
@@ -28,10 +30,10 @@ function triangle(pts, color) {
       for (P.y = bboxmin.y; P.y <= bboxmax.y; P.y++) {
           let bc_screen = barycentric(pts, P);
           if (bc_screen.x < 0 || bc_screen.y < 0 || bc_screen.z < 0) continue;
-          P.z = 0;
-          for (let i=0; i<3; i++) P.z+=pts[i].z;
-          if (zbuffer[P.x+P.y*width]<P.z){
-            console.log(P);
+          P.z = pts[0].z*bc_screen.x;
+          P.z += pts[1].z*bc_screen.y;
+          P.z += pts[2].z*bc_screen.z;
+          if (zbuffer[Math.round(P.x+P.y*width)]<P.z){
             zbuffer[P.x+P.y*width] = P.z;
             set(P, color);
           }
@@ -78,7 +80,7 @@ async function draw(){
 
       for (let j=0; j<3; j++){
         let v = model.vert(face[j]);
-        screen_coords.push(new Vec2((Number(v.x) + 1) * width / 2, (Number(v.y) + 1) * height / 2))
+        screen_coords.push(new Vec3((Number(v.x) + 1) * width / 2, (Number(v.y) + 1) * height / 2, Number(v.z)));
         if (flipVertically === true) screen_coords[j].y = height-screen_coords[j].y;
         world_coords.push(v);
       }
