@@ -1,3 +1,5 @@
-function getColor(colorV){
+function getColor(colorV) {
     return "rgb(" + colorV.x + "," + colorV.y + "," + colorV.z + ")";
 }
+
+export { getColor };
