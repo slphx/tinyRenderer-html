@@ -37,7 +37,6 @@ class FileLoader extends Loader {
 
         fetch( req )
             .then(response => {
-                console.log('FileType:', responseType);
 
                 switch ( responseType ) {
 					case 'arraybuffer':

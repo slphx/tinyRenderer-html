@@ -19,10 +19,10 @@ const staticColor = {
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 
-const Global = {
+let Global = {
 
-    width: canvas.width = window.innerWidth,
-    height: canvas.height = window.innerHeight,
+    width: canvas.width = 1024,
+    height: canvas.height = 1024,
 
     lightDir: new Vec3(0, 0, -1),
 

@@ -1,21 +1,41 @@
-import * as MyMath from "../util/MyMath.js"
+import {Vec2, Vec3} from "../util/MyMath.js"
 
 class Mesh {
-    #verts; #faces;
+    #verts; #faces; #vt; #vn; #tIndexes; #nIndexes;
     constructor(obj) {
         this.#verts = [];
         this.#faces = [];
+        this.#vt = [];
+        this.#vn = [];
+        this.#tIndexes = [];
+        this.#nIndexes = [];
 
         let lines = obj.split('\n');
+        let els, face, tIndex, nIndex, subEls;
         let n = 0;
         for (let line of lines) {
             n++;
-            let els = line.split(' ');
+            els = line.split(' ');
             if (els[0] === 'v') {
-                this.#verts.push(new MyMath.Vec3(els[1], els[2], els[3].slice(0, els[3].length - 1)));
+                this.#verts.push(new Vec3(els[1], els[2], els[3].slice(0, els[3].length - 1)));
+            }
+            else if (els[0] === 'vt') {
+                this.#vt.push(new Vec3(els[2], els[3], els[4].slice(0, els[3].length - 1)));
             }
             else if (els[0] === 'f') {
-                this.#faces.push(new MyMath.Vec3(els[1].split('/')[0] - 1, els[2].split('/')[0] - 1, els[3].split('/')[0].slice(0, els[3].length - 1) - 1));
+                face = [];
+                tIndex = [];
+                nIndex = [];
+                for (let i=1; i<=3; i++){
+                    subEls = els[i].split('/');
+                    face.push(subEls[0]);
+                    tIndex.push(subEls[1]);
+                    if (i==3) nIndex.push(subEls[2].slice(0, subEls[2].length - 1));
+                    else nIndex.push(subEls[2]);
+                }
+                this.#faces.push(face);
+                this.#tIndexes.push(tIndex);
+                this.#nIndexes.push(nIndex);
             }
         }
         console.log('loaded # v# ', this.#verts.length, ' f# ', this.#faces.length);
@@ -31,6 +51,20 @@ class Mesh {
     }
     face(i) {
         return this.#faces[i];
+    }
+    tIndex(i){
+        return this.#tIndexes[i];
+    }
+    setTexture(texture){
+        this.texture = texture;
+    }
+    getTexture(index){
+        index--;
+        let vt = this.#vt[index];
+        let x = vt.x, y = vt.y;
+        x = Math.round(Number(x)*Number(this.texture.width));
+        y = Math.round(Number(y)*Number(this.texture.height));
+        return this.texture.getTexture(x, y);
     }
 }
 

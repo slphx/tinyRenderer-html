@@ -13,9 +13,7 @@ class OBJLoader extends Loader{
 
     parse(text, onLoad){
         let object = new Mesh(text);
-        console.log(object);
         onLoad(object);
-        return object;
     }
 }
 

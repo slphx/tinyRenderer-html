@@ -8,6 +8,12 @@ class Vec2{
         this.x /= l;
         this.y /= l;
     }
+    u(){
+        return this.x;
+    }
+    v(){
+        return this.y;
+    }
 }
 
 class Vec3{
