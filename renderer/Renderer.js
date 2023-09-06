@@ -52,11 +52,14 @@ class Renderer {
                 this.triangle(screen_coords, getColor(color));
             } else {
                 let tIndex = mesh.tIndex(i);
+                let nIndex = mesh.nIndex(i);
                 let colors = [];
+                let normals = [];
                 for (let k=0; k<3; k++){
                     colors.push(mesh.getTexture(tIndex[k]));
+                    normals.push(mesh.getNormal(nIndex[k]));
                 }
-                this.barycentricTriangle(screen_coords, colors, intensity);
+                this.barycentricTriangle(screen_coords, colors, normals);
 
             }
           }
@@ -104,7 +107,7 @@ class Renderer {
         }
     }
 
-    barycentricTriangle(pts, colors, intensity) {
+    barycentricTriangle(pts, colors, normals) {
         const zbuffer = Global.zbuffer;
         const width = Global.width;
         const height = Global.height;
@@ -131,8 +134,14 @@ class Renderer {
                 if (zbuffer[Math.round(P.x+P.y*width)]<P.z){
                     zbuffer[P.x+P.y*width] = P.z;
                     let color = [];
+                    let normal = [];
+                    normal.push(normals[0].x*bc_screen.x + normals[1].x*bc_screen.y + normals[2].x*bc_screen.z);
+                    normal.push(normals[0].y*bc_screen.x + normals[1].y*bc_screen.y + normals[2].y*bc_screen.z);
+                    normal.push(normals[0].z*bc_screen.x + normals[1].z*bc_screen.y + normals[2].z*bc_screen.z);
+                    normal = new Vec3(normal[0], normal[1], normal[2]);
+                    let intensity = -normal.dot(lightDir);
                     for (let k=0; k<3; k++){
-                        color.push(Math.round(colors[0][k]*bc_screen.x+colors[1][k]*bc_screen.y+colors[2][k]*bc_screen.z));
+                        color.push(Math.round((colors[0][k]*bc_screen.x+colors[1][k]*bc_screen.y+colors[2][k]*bc_screen.z))*intensity);
                     }
                     this.set(P.x, P.y, getColor(color));
                 }

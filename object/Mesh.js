@@ -22,6 +22,9 @@ class Mesh {
             else if (els[0] === 'vt') {
                 this.#vt.push(new Vec3(els[2], els[3], els[4].slice(0, els[3].length - 1)));
             }
+            else if (els[0] === 'vn') {
+                this.#vn.push(new Vec3(els[2], els[3], els[4].slice(0, els[3].length - 1)));
+            }
             else if (els[0] === 'f') {
                 face = [];
                 tIndex = [];
@@ -55,6 +58,9 @@ class Mesh {
     tIndex(i){
         return this.#tIndexes[i];
     }
+    nIndex(i){
+        return this.#nIndexes[i];
+    }
     setTexture(texture){
         this.texture = texture;
     }
@@ -65,6 +71,10 @@ class Mesh {
         x = Math.round(Number(x)*Number(this.texture.width));
         y = Math.round(Number(y)*Number(this.texture.height));
         return this.texture.getTexture(x, y);
+    }
+    getNormal(index){
+        index--;
+        return this.#vn[index];
     }
 }
 
