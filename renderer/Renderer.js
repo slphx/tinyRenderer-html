@@ -9,7 +9,6 @@ class Renderer {
     }
     draw(){
         let mesh = this.meshes[0];
-
         if (mesh == undefined) return;
         const zbuffer = Global.zbuffer;
         const width = Global.width;
@@ -19,31 +18,24 @@ class Renderer {
         zbuffer.length = width*height;
         zbuffer.fill(-Number.MAX_VALUE, 0, width*height);
         for (let i=0; i<mesh.nfaces(); i++){
-        // for (let i=0; i<100; i++){
-        
+
           let screen_coords = [];
           let world_coords = [];
           let face = mesh.face(i);
 
-        //   let target = 100;
-        //   let f = false;
-
           for (let j=0; j<3; j++){
             let v = mesh.vert(face[j]-1);
-
-            // if (Number(face[j])===target) f = true;
 
             screen_coords.push(new Vec3((Number(v.x) + 1) * width / 2, (Number(v.y) + 1) * height / 2, Number(v.z)));
             if (Config.flipVertically === true) screen_coords[j].y = height-screen_coords[j].y;
             world_coords.push(v);
           }
 
-        //   if (!f) continue;
-        //   console.log('haha');
-
           let n = world_coords[2].sub(world_coords[0]).cross(world_coords[1].sub(world_coords[0]));
           n.normalize();
           let intensity = n.dot(lightDir);
+
+
           if (intensity > 0){
             
             if (mesh.texture === undefined){
@@ -69,7 +61,7 @@ class Renderer {
     drawTexture(texture){
         for (let i=0; i<texture.width; i++){
             for (let j=0; j<texture.height; j++){
-                this.set(i, j, getColor(texture.getTexture(i, j)));
+                this.set(i, texture.height - j, getColor(texture.getTexture(i, j)));
             }
         }
     }

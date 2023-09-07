@@ -76,6 +76,23 @@ class Mesh {
         index--;
         return this.#vn[index];
     }
+    projectionTransform(m){
+        let newV = [];
+        for (let i=0; i<this.#verts.length; i++){
+            let tempv = [];
+            // console.log('before:', this.#verts[i]);
+            for (let j=0; j<4; j++){
+                tempv.push(this.#verts[i].dot(m.row(j)));
+            }
+            
+            newV.push(new Vec3(tempv[0]/tempv[3], tempv[1]/tempv[3], tempv[2]/tempv[3]));
+            // console.log('after:', newV[i]);
+        }
+        this.#verts = newV;
+    }
+    printv(){
+        console.log(this.#verts);
+    }
 }
 
 export { Mesh }
