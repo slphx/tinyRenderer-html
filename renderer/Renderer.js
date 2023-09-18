@@ -1,12 +1,48 @@
-import { Vec2, Vec3, barycentric } from "../util/MyMath.js";
+import { Vec2, Vec3, Vec4, barycentric } from "../util/MyMath.js";
 import { staticColor, Global, Config, canvas, ctx } from "../util/Static.js";
 import { getColor, getColorV } from "../util/util.js";
 
 class Renderer {
-
+    ViewPort; Projection; ModelView; scope;
     constructor(){
         this.meshes = [];
     }
+
+    render(scene, camera){
+        this.scope = this;
+        this.ViewPort = scene.ViewPort;
+
+        for (let k=0; k<scene.meshes.length; k++){
+            let mesh = scene.meshes[k];
+            for (let i=0; i<mesh.nfaces(); i++){
+                let screen_coords = [];
+                for (let j=0; j<3; j++){
+                    screen_coords.push(this.shader.vertex(mesh, i, j));
+                }
+                color = new Vec3();
+                this.triangle(screen_coords);
+            }
+        }
+    }
+
+    shader = class {
+        vertex = function(mesh, i, j){
+            let v = mesh.vert[mesh.face[i][j]];
+            v = new Vec4(v.x, v.y, v.z, 1);
+            return scope.ViewPort.dot(v);
+        }
+        fragment = function(mesh, i, color){
+            return true;
+        }
+    }
+
+    setShaderVertex(vertex){
+        this.shader.vertex = vertex;
+    }
+    setShaderFragment(fragment){
+        this.shader.fragment = fragment;
+    }
+
     draw(){
         let mesh = this.meshes[0];
         if (mesh == undefined) return;

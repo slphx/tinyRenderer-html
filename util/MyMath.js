@@ -112,4 +112,4 @@ function barycentric(pts, P) {
     // return new Vec3(1 - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
 }
 
-export {Vec2, Vec3, Mat4, barycentric};
+export {Vec2, Vec3, Vec4, Mat4, barycentric};
