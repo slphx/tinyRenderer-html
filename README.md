@@ -7,7 +7,7 @@ tiny renderer -- html version
 
 ## 修改记录
 
-* xxx
+* 57aafa2
   * 透视投影
 
 
