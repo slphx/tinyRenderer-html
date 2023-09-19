@@ -52,6 +52,9 @@ class Vec3{
         this.y /= l;
         this.z /= l;
     }
+    norm(){
+        return Math.sqrt(this.x**2 + this.y**2 + this.z**2);
+    }
     set(x, y, z){
         this.x = x; this.y = y; this.z = z;
     }
@@ -89,6 +92,19 @@ class Mat4{
     }
     dot(v){
         return new Vec4(v.dot(this.row(0)), v.dot(this.row(1)), v.dot(this.row(2)), v.dot(this.row(3)));
+    }
+    times(m){
+        let r = [];
+        r.length = 16;
+        for (let i=0; i<4; i++){
+            for (let j=0; j<4; j++){
+                r[i*4+j] = 0;
+                for (let k=0; k<4; k++){
+                    r[i*4+j] += this.m[i*4+k]*m.m[k*4+j];
+                }
+            }
+        }
+        return new Mat4(r);
     }
     row(i){
         let x = 4*i;

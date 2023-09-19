@@ -7,7 +7,7 @@ class Scene{
         this.meshes =[];
         this.width = width;
         this.height = height;
-        this.depth = 255;
+        this.depth = -255;
         this.culViewPort();
     }
     addMesh(mesh){

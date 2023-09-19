@@ -17,7 +17,7 @@ class Shader{
         scope.get("intensity").push(Math.max(0, -mesh.getNormal(iface, nvert).dot(scope.lightDir)));
         scope.get("uv").push(mesh.getUV(iface, nvert));
 
-        return scope.ViewPort.dot(v);
+        return scope.ViewPort.dot(scope.Projection.dot(scope.ModelView.dot(v)));
         
     }
     fragment = function(scope, bar, color){
@@ -27,7 +27,6 @@ class Shader{
               bar.x*uvs[0][1] + bar.y*uvs[1][1] + bar.z*uvs[2][1]];
         let diffuse = scope.mesh.getTextureByUV(uv);
         color.set(diffuse[0]*intensity, diffuse[1]*intensity, diffuse[2]*intensity);
-        console.log(color);
         return true;
     }
 }

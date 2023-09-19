@@ -12,9 +12,12 @@ class Renderer {
     }
 
     render(scene, camera){
+        if (scene.meshes.length ===0) return;
 
         this.scope = this;
         this.ViewPort = scene.ViewPort;
+        this.ModelView = camera.ModelView;
+        this.Projection = camera.Projection;
         this.width = scene.width;
         this.height = scene.height;
         this.lightDir = Global.lightDir;
@@ -26,17 +29,23 @@ class Renderer {
 
         this.shader = new Shader(this.scope);
         
-        if (scene.meshes.length ===0) return;
+        
         for (let k=0; k<scene.meshes.length; k++){
             let mesh = scene.meshes[k];
             this.mesh = mesh;
-            for (let i=0; i<100; i++){
+            for (let i=0; i<mesh.nfaces(); i++){
                 this.shader.init(this.scope);
                 let screen_coords = [];
                 for (let j=0; j<3; j++){
                     screen_coords.push(this.shader.vertex(this.scope, i, j));
-                    if (Config.flipVertically === true) screen_coords[j].y = this.height-screen_coords[j].y;
                 }
+
+                for (let i=0; i<3; i++){
+                    screen_coords[i].x/=screen_coords[i].w;
+                    screen_coords[i].y/=screen_coords[i].w;
+                    screen_coords[i].z/=screen_coords[i].w;
+                }
+
                 this.triangle(this.scope, screen_coords);
             }
         }
@@ -92,6 +101,7 @@ class Renderer {
     }
 
     set(x, y, color){
+        // if (Config.flipVertically === true) y = this.height-y;
         ctx.fillStyle = color;
         ctx.fillRect(x, y, 1, 1);
     }
