@@ -5,6 +5,7 @@ import { Vec3 } from "../util/MyMath.js";
 
 class OBJLoader extends Loader{
     load(url, onLoad){
+        console.log('load', url);
         const scope = this;
         const loader = new FileLoader();
         loader.load(url, function(text){
@@ -36,10 +37,10 @@ class OBJLoader extends Loader{
                 nIndex = [];
                 for (let i=1; i<=3; i++){
                     subEls = els[i].split('/');
-                    face.push(subEls[0]);
-                    tIndex.push(subEls[1]);
-                    if (i==3) nIndex.push(subEls[2].slice(0, subEls[2].length - 1));
-                    else nIndex.push(subEls[2]);
+                    face.push(subEls[0] - 1);
+                    tIndex.push(subEls[1] - 1);
+                    if (i==3) nIndex.push(subEls[2].slice(0, subEls[2].length - 1) - 1);
+                    else nIndex.push(subEls[2] - 1);
                 }
                 mesh.faces.push(face);
                 mesh.tIndexes.push(tIndex);

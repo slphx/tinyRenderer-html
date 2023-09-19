@@ -19,8 +19,9 @@ class Mesh {
     vert(i) {
         return this.verts[i];
     }
-    face(i) {
-        return this.faces[i];
+    face(i, j) {
+        if (j === undefined) return this.faces[i];
+        return this.faces[i][j];
     }
     tIndex(i){
         return this.tIndexes[i];
@@ -31,16 +32,26 @@ class Mesh {
     setTexture(texture){
         this.texture = texture;
     }
-    getTexture(index){
-        index--;
+    getTexture(i, n){
+        let index = this.tIndexes[i][n];
         let vt = this.vt[index];
         let x = vt.x, y = vt.y;
         x = Math.round(Number(x)*Number(this.texture.width));
         y = Math.round(Number(y)*Number(this.texture.height));
-        return this.texture.getTexture(x, y);
+        return this.texture.diffuse(x, y);
     }
-    getNormal(index){
-        index--;
+    getUV(i, n){
+        let index = this.tIndexes[i][n];
+        return [this.vt[index].x, this.vt[index].y];
+    }
+    getTextureByUV(uv){
+        let x = uv[0], y = uv[1];
+        x = Math.round(Number(x)*Number(this.texture.width));
+        y = Math.round(Number(y)*Number(this.texture.height));
+        return this.texture.diffuse(x, y);
+    }
+    getNormal(i, n){
+        let index = this.nIndexes[i][n];
         return this.vn[index];
     }
     projectionTransform(m){
