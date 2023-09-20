@@ -32,7 +32,7 @@ function main(){
       scene.setWidth(Global.width);
       scene.setHeight(Global.height);
       renderer.render(scene, camera);
-    
+      console.log('finish');
     })
   })
 

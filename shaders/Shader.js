@@ -17,7 +17,7 @@ class Shader{
         scope.get("intensity").push(Math.max(0, -mesh.getNormal(iface, nvert).dot(scope.lightDir)));
         scope.get("uv").push(mesh.getUV(iface, nvert));
 
-        return scope.ViewPort.dot(scope.Projection.dot(scope.ModelView.dot(v)));
+        return scope.ViewPort.dot(scope.Projection.dot(v));
         
     }
     fragment = function(scope, bar, color){

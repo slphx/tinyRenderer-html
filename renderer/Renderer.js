@@ -91,7 +91,6 @@ class Renderer {
                 const color = new Vec3(0,0,0);
                 if (!this.shader.fragment(scope, bc_screen, color)) continue;
                 P.z = pts[0].z*bc_screen.x + pts[1].z*bc_screen.y + pts[2].z*bc_screen.z;
-
                 if (this.zbuffer[Math.round(P.x+P.y*width)]<P.z){
                     this.zbuffer[P.x+P.y*width] = P.z;
                     this.set(P.x, P.y,  getColorV(color));
@@ -101,7 +100,7 @@ class Renderer {
     }
 
     set(x, y, color){
-        // if (Config.flipVertically === true) y = this.height-y;
+        if (Config.flipVertically === true) y = this.height-y;
         ctx.fillStyle = color;
         ctx.fillRect(x, y, 1, 1);
     }
