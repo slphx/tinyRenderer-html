@@ -18,7 +18,7 @@ class Texture{
         this.height = height;
         return this;
     }
-    diffuse(y, x){
+    get(y, x){
         x = this.width - x;
         let s = 4*(Number(x)*Number(this.width)+Number(y));
         return [this.texture[s], this.texture[s+1], this.texture[s+2], this.texture[s+3]];

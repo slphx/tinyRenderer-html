@@ -20,6 +20,7 @@ class Renderer {
         this.Projection = camera.Projection;
         this.width = scene.width;
         this.height = scene.height;
+        this.imageSize = scene.size;
         this.lightDir = Global.lightDir;
         this.scene = scene;
         this.camera = camera;
@@ -27,8 +28,7 @@ class Renderer {
         this.zbuffer.length = this.width*this.height;
         this.zbuffer.fill(-Number.MAX_VALUE, 0,  this.width*this.height);
 
-        this.shader = new Shader(this.scope);
-        
+        this.imageData = ctx.createImageData(this.width, this.height);
         
         for (let k=0; k<scene.meshes.length; k++){
             let mesh = scene.meshes[k];
@@ -49,6 +49,7 @@ class Renderer {
                 this.triangle(this.scope, screen_coords);
             }
         }
+        ctx.putImageData(this.imageData, 0, 0);
     }
 
     setShaderVertex(vertex){
@@ -59,17 +60,19 @@ class Renderer {
     }
 
     drawTexture(texture){
+        this.width = texture.width; this.height = texture.height;
+        this.imageData = ctx.createImageData(texture.width, texture.height);
         for (let i=0; i<texture.width; i++){
             for (let j=0; j<texture.height; j++){
-                this.set(i, texture.height - j, getColor(texture.getTexture(i, j)));
+                this.set(i, j, texture.get(i, j));
             }
         }
+        ctx.putImageData(this.imageData, 0, 0);
     }
 
     triangle(scope, pts) {
         const width = this.width;
         const height = this.height;
-        const lightDir = this.lightDir;
 
         let bboxmin = new Vec2(width - 1, height - 1);
         let bboxmax = new Vec2(0, 0);
@@ -88,12 +91,12 @@ class Renderer {
                 let bc_screen = barycentric(pts, P);
                 if (bc_screen.x < 0 || bc_screen.y < 0 || bc_screen.z < 0) continue;
                 
-                const color = new Vec3(0,0,0);
-                if (!this.shader.fragment(scope, bc_screen, color)) continue;
+                const color = [];
+                if (this.shader.fragment(scope, bc_screen, color)) continue;
                 P.z = pts[0].z*bc_screen.x + pts[1].z*bc_screen.y + pts[2].z*bc_screen.z;
                 if (this.zbuffer[Math.round(P.x+P.y*width)]<P.z){
                     this.zbuffer[P.x+P.y*width] = P.z;
-                    this.set(P.x, P.y,  getColorV(color));
+                    this.set(P.x, P.y,  color);
                 }
             }
         }
@@ -101,8 +104,11 @@ class Renderer {
 
     set(x, y, color){
         if (Config.flipVertically === true) y = this.height-y;
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, 1, 1);
+        let index = (y*this.width+x)*4;
+        for (let j=0; j<3; j++){
+            this.imageData.data[index+j]=color[j];
+        }
+        this.imageData.data[index+3] = 255;        
     }
 
     get(key){
@@ -111,6 +117,10 @@ class Renderer {
 
     def(key, value){
         this.variables[key] = value;
+    }
+    setShader(shader){
+        this.shader = shader;
+        return this;
     }
 }
 

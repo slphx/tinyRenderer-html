@@ -38,7 +38,7 @@ class Mesh {
         let x = vt.x, y = vt.y;
         x = Math.round(Number(x)*Number(this.texture.width));
         y = Math.round(Number(y)*Number(this.texture.height));
-        return this.texture.diffuse(x, y);
+        return this.texture.get(x, y);
     }
     getUV(i, n){
         let index = this.tIndexes[i][n];
@@ -48,7 +48,7 @@ class Mesh {
         let x = uv[0], y = uv[1];
         x = Math.round(Number(x)*Number(this.texture.width));
         y = Math.round(Number(y)*Number(this.texture.height));
-        return this.texture.diffuse(x, y);
+        return this.texture.get(x, y);
     }
     getNormal(i, n){
         let index = this.nIndexes[i][n];
