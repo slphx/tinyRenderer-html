@@ -24,7 +24,7 @@ class PhongShader extends Shader{
         let uv = [bar.x*uvs[0][0] + bar.y*uvs[1][0] + bar.z*uvs[2][0],
               bar.x*uvs[0][1] + bar.y*uvs[1][1] + bar.z*uvs[2][1]];
         
-        // n = scope.Projection.times(scope.ModelView).dot(uv);
+         // n = scope.Projection.times(scope.ModelView).dot(uv);
         let diffuse = scope.mesh.getTextureByUV(uv);
         color.push(diffuse[0]*intensity, diffuse[1]*intensity, diffuse[2]*intensity);
         return false;
