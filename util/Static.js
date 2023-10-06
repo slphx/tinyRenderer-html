@@ -24,7 +24,7 @@ let Global = {
     width: canvas.width = 1024,
     height: canvas.height = 1024,
 
-    lightDir: new Vec3(0.0, 0.0, -1.0),
+    lightDir: new Vec3(-1, 1, -0.6),
 
     zbuffer: [],
 }

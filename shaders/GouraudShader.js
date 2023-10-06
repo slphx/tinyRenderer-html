@@ -12,15 +12,14 @@ class GouraudShader extends Shader{
         let mesh = scope.mesh;
         let v = mesh.verts[mesh.faces[iface][nvert]];
         v = new Vec4(v.x, v.y, v.z, 1);
-        scope.get("intensity").push(Math.max(0, -mesh.getNormal(iface, nvert).dot(scope.lightDir)));
+        scope.get("intensity").push(Math.max(0, mesh.getNormal(iface, nvert).dot(scope.lightDir)));
 
         return scope.ViewPort.dot(scope.Projection.dot(scope.ModelView.dot(v)));
         
     }
     fragment = function(scope, bar, color){
         let intensity = bar.dot(scope.get("intensity"));
-
-        color.push(255*intensity, 255*intensity, 255*intensity);
+        color.push(150*intensity+50, 150*intensity+50, 150*intensity+50);
         return false;
     }
 

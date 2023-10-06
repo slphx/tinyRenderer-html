@@ -21,32 +21,43 @@ class OBJLoader extends Loader{
         let n = 0;
         for (let line of lines) {
             n++;
-            els = line.split(' ');
+            els = [];
+            let i=0; let j=0;
+            while (i < line.length){
+                while ((line[i] === ' ' || line[i] === '\r') && i < line.length) i++;
+                j = i;
+                while ((line[i] != ' ' && line[i] != '\r') && i < line.length) i++;
+                els.push(line.slice(j, i));
+            }
+
             if (els[0] === 'v') {
-                mesh.verts.push(new Vec3(els[1], els[2], els[3].slice(0, els[3].length - 1)));
+                mesh.verts.push(new Vec3(els[1], els[2], els[3]));
             }
             else if (els[0] === 'vt') {
-                mesh.vt.push(new Vec3(els[2], els[3], els[4].slice(0, els[3].length - 1)));
+                mesh.vt.push(new Vec3(els[1], els[2]));
             }
             else if (els[0] === 'vn') {
-                mesh.vn.push(new Vec3(els[2], els[3], els[4].slice(0, els[3].length - 1)));
+                mesh.vn.push(new Vec3(els[1], els[2], els[3]));
             }
             else if (els[0] === 'f') {
                 face = [];
                 tIndex = [];
                 nIndex = [];
-                for (let i=1; i<=3; i++){
+                for (let i=1; i<=4; i++){
                     subEls = els[i].split('/');
                     face.push(subEls[0] - 1);
                     tIndex.push(subEls[1] - 1);
-                    if (i==3) nIndex.push(subEls[2].slice(0, subEls[2].length - 1) - 1);
-                    else nIndex.push(subEls[2] - 1);
+                    nIndex.push(subEls[2] - 1);
                 }
+                
                 mesh.faces.push(face);
                 mesh.tIndexes.push(tIndex);
                 mesh.nIndexes.push(nIndex);
             }
         }
+        
+        if (mesh.faces[0][3] != -1) mesh.type = 4; else mesh.type = 3;
+        // console.log(mesh.faces[0][3]);
         console.log('loaded # v# ', mesh.verts.length, ' f# ', mesh.faces.length);
         onLoad(mesh);
     }

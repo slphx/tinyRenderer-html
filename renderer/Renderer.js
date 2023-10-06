@@ -21,7 +21,9 @@ class Renderer {
         this.width = scene.width;
         this.height = scene.height;
         this.imageSize = scene.size;
+        
         this.lightDir = Global.lightDir;
+        this.lightDir.normalize();
         this.scene = scene;
         this.camera = camera;
         this.zbuffer = [];
@@ -29,6 +31,7 @@ class Renderer {
         this.zbuffer.fill(-Number.MAX_VALUE, 0,  this.width*this.height);
 
         this.imageData = ctx.createImageData(this.width, this.height);
+        // this.imageData.data.fill(100, 0, this.width*this.height*4);
         
         for (let k=0; k<scene.meshes.length; k++){
             let mesh = scene.meshes[k];
@@ -36,17 +39,20 @@ class Renderer {
             for (let i=0; i<mesh.nfaces(); i++){
                 this.shader.init(this.scope);
                 let screen_coords = [];
-                for (let j=0; j<3; j++){
+                for (let j=0; j<mesh.type; j++){
                     screen_coords.push(this.shader.vertex(this.scope, i, j));
                 }
 
-                for (let i=0; i<3; i++){
+                for (let i=0; i<mesh.type; i++){
                     screen_coords[i].x/=screen_coords[i].w;
                     screen_coords[i].y/=screen_coords[i].w;
                     screen_coords[i].z/=screen_coords[i].w;
                 }
-
-                this.triangle(this.scope, screen_coords);
+                if (mesh.type === 4){
+                    this.triangle(this.scope, [screen_coords[0], screen_coords[1], screen_coords[2]]);
+                    this.triangle(this.scope, [screen_coords[0], screen_coords[2], screen_coords[3]]);
+                }
+                else this.triangle(this.scope, screen_coords);
             }
         }
         ctx.putImageData(this.imageData, 0, 0);
